@@ -63,7 +63,7 @@ performMovement :: [Card] -> [Card] -> Int -> ([Card], [Card], Bool)
 performMovement _ _ 0 = ([], [], False)
 performMovement [] _ _ = ([], [], False)
 performMovement origin destination n
-  | allCardsFaceUp && verifyOrder (take n origin) && verifyOrder (take n origin ++ [head destination]) = ([], [], False)
+  | allCardsFaceUp && verifyOrder (take n origin) && verifyOrder (take n origin ++ [head destination]) = (drop n origin, take n origin ++ destination, True)
   | otherwise = ([], [], False)
   where
     isLessOrSameLength = n <= length origin
@@ -85,3 +85,5 @@ replaceColumn list 0 board = list : tail board
 replaceColumn list index board = leftList ++ list : tail rightList
   where
     (leftList, rightList) = splitAt (index -1) board
+
+appendRow :: [[Card]] -> [Card] -> ([[Card]], [Card])

@@ -1,4 +1,4 @@
-import Utils (Card, createDeck, dealCards, performMovement, replaceColumn, shuffleDeck)
+import Utils (Card, createDeck, dealCards, performMovement, replaceColumn, shuffleDeck, turnFirstCard)
 
 main :: IO ()
 main = do
@@ -8,7 +8,7 @@ main = do
 
 playTurn :: [[Card]] -> [Card] -> IO ()
 playTurn board cards = do
-  print (board, cards)
+  print (board)
   putStrLn "What do you want to do?"
   putStrLn "1. Move Cards"
   putStrLn "2. Place row of cards"
@@ -16,8 +16,8 @@ playTurn board cards = do
   option <- getLine
   case option of
     "1" -> do
-      moveCards board
-      playTurn board cards
+      newBoard <- moveCards board
+      playTurn (map turnFirstCard newBoard) cards
     "3" -> do
       putStrLn "Quitting"
       return ()
@@ -45,9 +45,7 @@ moveCards board = do
       let (newOrigin, newDestination, wasValid) = performMovement (board !! (origin - 1)) (board !! (destination - 1)) cards
       if wasValid
         then do
-          return (replaceColumn newOrigin (origin -1) (replaceColumn newDestination (destination -1) board))
+          return (replaceColumn newOrigin origin (replaceColumn newDestination destination board))
         else do
           putStrLn "Invalid movement"
           return board
-
-  return []
