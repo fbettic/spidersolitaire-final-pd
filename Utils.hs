@@ -6,6 +6,8 @@ module Utils
     turnFirstCard,
     performMovement,
     replaceColumn,
+    appendRow,
+    removeSet,
   )
 where
 
@@ -87,3 +89,13 @@ replaceColumn list index board = leftList ++ list : tail rightList
     (leftList, rightList) = splitAt (index -1) board
 
 appendRow :: [[Card]] -> [Card] -> ([[Card]], [Card])
+appendRow board deck = (map turnFirstCard $ zipWith (:) (take 10 deck) board, drop 10 deck)
+
+removeSet :: [Card] -> [Card]
+removeSet column
+  | isViableSet = drop 13 column
+  | otherwise = column
+  where
+    isViableLength = length column == 13
+    isAllFaceUp = isViableLength && faceUp (column !! 12)
+    isViableSet = isAllFaceUp && verifyOrder (take 13 column)
