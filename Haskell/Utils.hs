@@ -65,13 +65,14 @@ performMovement :: [Card] -> [Card] -> Int -> ([Card], [Card], Bool)
 performMovement _ _ 0 = ([], [], False)
 performMovement [] _ _ = ([], [], False)
 performMovement origin destination n
-  | allCardsFaceUp && verifyOrder (take n origin) && verifyOrder (take n origin ++ [head destination]) = (drop n origin, take n origin ++ destination, True)
+  | allCardsFaceUp && verifyOrder (take n origin) && verifyOrder (take n origin ++ (if null destination then [] else [head destination])) = (drop n origin, take n origin ++ destination, True)
   | otherwise = ([], [], False)
   where
     isLessOrSameLength = n <= length origin
     allCardsFaceUp = isLessOrSameLength && faceUp (origin !! (n -1))
 
 {-
+
 1,2,3,4,5
 
 5
@@ -96,6 +97,6 @@ removeSet column
   | isViableSet = drop 13 column
   | otherwise = column
   where
-    isViableLength = length column == 13
+    isViableLength = length column >= 13
     isAllFaceUp = isViableLength && faceUp (column !! 12)
     isViableSet = isAllFaceUp && verifyOrder (take 13 column)

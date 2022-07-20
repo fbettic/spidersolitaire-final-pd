@@ -15,7 +15,7 @@ playTurn board deck sets = do
       putStrLn "Congratulations! You won Spider Solitaire"
       return ()
     else do
-      print (currentBoard, length deck)
+      print (currentBoard, length deck, amountSets)
       putStrLn "What do you want to do?"
       putStrLn "1. Move Cards"
       putStrLn "2. Place row of cards"
@@ -52,7 +52,7 @@ moveCards board = do
   let origin = read originData :: Int
   let destination = read destinationData :: Int
   let cards = read cardsData :: Int
-  if origin >= 10 || destination >= 10 || origin < 0 || destination < 0 || destination == origin
+  if origin > 10 || destination > 10 || origin <= 0 || destination <= 0 || destination == origin
     then do
       putStrLn "Invalid column"
       return board
