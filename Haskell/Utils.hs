@@ -65,7 +65,7 @@ performMovement :: [Card] -> [Card] -> Int -> ([Card], [Card], Bool)
 performMovement _ _ 0 = ([], [], False)
 performMovement [] _ _ = ([], [], False)
 performMovement origin destination n
-  | allCardsFaceUp && verifyOrder (take n origin) && verifyOrder (take n origin ++ (if null destination then [] else [head destination])) = (drop n origin, take n origin ++ destination, True)
+  | allCardsFaceUp && verifyOrder (take n origin) && verifyOrder (take n origin ++ ([head destination | not (null destination)])) = (drop n origin, take n origin ++ destination, True)
   | otherwise = ([], [], False)
   where
     isLessOrSameLength = n <= length origin
