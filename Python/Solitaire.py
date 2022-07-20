@@ -56,22 +56,18 @@ def printCardStack(cardStack):
     return string
 
 def verifyOrder(cardStack):
-    if len(cardStack) > 1:
-        for i in range(len(cardStack)-1):
-            if cardStack[i][0] >= cardStack[i+1][0]:
-                return False
-        return True
+    if len(cardStack) == 0:
+        return False
     elif len(cardStack) == 1:
         return True
     else:
-        return False
+        return cardStack[0][0] < cardStack[1][0] and verifyOrder(cardStack[1:])
 
 
 def main():    
     board = dealCards(shuffleDeck(createDeck()))
     print("cards in deck:",len(board[1]))
     showCardStacks(board[0])
-
 
     return 0
 
