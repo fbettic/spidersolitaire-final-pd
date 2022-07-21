@@ -1,4 +1,4 @@
-import Utils (Card, appendRow, createDeck, dealCards, performMovement, removeSet, replaceColumn, shuffleDeck, turnFirstCard)
+import Haskell.Utils (Card, appendRow, createDeck, dealCards, performMovement, removeSet, replaceColumn, showBoard, shuffleDeck, turnFirstCard)
 
 main :: IO ()
 main = do
@@ -15,7 +15,12 @@ playTurn board deck sets = do
       putStrLn "Congratulations! You won Spider Solitaire"
       return ()
     else do
-      print (currentBoard, length deck, amountSets)
+      putStr "Sets Removed: "
+      print amountSets
+      putStr "Cards on the deck: "
+      print (length deck)
+      putStrLn "Cards on the board: "
+      putStr (showBoard currentBoard)
       putStrLn "What do you want to do?"
       putStrLn "1. Move Cards"
       putStrLn "2. Place row of cards"

@@ -1,4 +1,4 @@
-module Utils
+module Haskell.Utils
   ( Card (..),
     createDeck,
     shuffleDeck,
@@ -8,9 +8,12 @@ module Utils
     replaceColumn,
     appendRow,
     removeSet,
+    showBoard,
   )
 where
 
+import StringBuffer (StringBuffer (len))
+import System.Console.Terminfo (Attributes (reverseAttr))
 import System.Random (randomRIO)
 
 data Card = Card
@@ -100,3 +103,7 @@ removeSet column
     isViableLength = length column >= 13
     isAllFaceUp = isViableLength && faceUp (column !! 12)
     isViableSet = isAllFaceUp && verifyOrder (take 13 column)
+
+showBoard :: [[Card]] -> String
+showBoard [] = ""
+showBoard (x : xs) = "Column " ++ show (10 - length xs) ++ ":\t" ++ (show . reverse) x ++ "\n" ++ showBoard xs
