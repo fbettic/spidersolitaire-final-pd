@@ -69,7 +69,7 @@ def verifyOrder(cardStack):
 
 
 def performMovement(origin, destination, n):
-    if n <= len(origin) and origin[n-1][1] == True and verifyOrder(origin[:n] + [destination[0] if len(destination) > 0 else []]):
+    if n <= len(origin) and origin[n-1][1] == True and verifyOrder(origin[:n] + ([destination[0]] if len(destination) > 0 else [])):
         return (origin[n:], origin[:n] + destination, True)
     else:
         return ([], [], False)
