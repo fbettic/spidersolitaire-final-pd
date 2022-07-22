@@ -65,7 +65,7 @@ def verifyOrder(cardStack):
     elif len(cardStack) == 1:
         return True
     else:
-        return cardStack[0][0] < cardStack[1][0] and verifyOrder(cardStack[1:])
+        return (cardStack[1][0] - cardStack[1][0]) == 1 and verifyOrder(cardStack[1:])
 
 
 def performMovement(origin, destination, n):
@@ -91,8 +91,6 @@ def removeSet(column):
 
 def main():
     board = dealCards(shuffleDeck(createDeck()))
-    print("cards in deck:", len(board[1]))
-    showCardStacks(board[0])
     playTurn(board[0], board[1], 0)
     return 0
 
@@ -121,7 +119,7 @@ def moveCards(board):
 
 
 def playTurn(board, deck, sets):
-    currentBoard = list(map(removeSet, board))
+    currentBoard = list(map(turnFirstCard, list(map(removeSet, board))))
     amountSets = sets + \
         len(list(filter(lambda x: x[1] != x[0], zip(board, currentBoard))))
     if amountSets >= 8:
