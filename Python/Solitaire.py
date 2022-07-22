@@ -65,7 +65,7 @@ def verifyOrder(cardStack):
     elif len(cardStack) == 1:
         return True
     else:
-        return (cardStack[1][0] - cardStack[1][0]) == 1 and verifyOrder(cardStack[1:])
+        return (cardStack[1][0] - cardStack[0][0]) == 1 and verifyOrder(cardStack[1:])
 
 
 def performMovement(origin, destination, n):
