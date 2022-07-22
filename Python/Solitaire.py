@@ -5,44 +5,47 @@ from imp import new_module
 from pickle import TRUE
 
 
-
 def createDeck():
     deck = []
-    for i in range(1,14):
-        for j in range(1,9):
-            card = (i,False)
+    for i in range(1, 14):
+        for j in range(1, 9):
+            card = (i, False)
             deck.append(card)
-    return deck 
+    return deck
+
 
 def shuffleDeck(deck):
     import random
     random.shuffle(deck)
     return deck
 
+
 def dealCards(deck):
-    cardStacks = [[],[],[],[],[],[],[],[],[],[]]
+    cardStacks = [[], [], [], [], [], [], [], [], [], []]
 
     for i in range(54):
-        cardStacks[i%10].append(deck[i])
-            
+        cardStacks[i % 10].append(deck[i])
+
     for i in range(len(cardStacks)):
         cardStacks[i] = turnFirstCard(cardStacks[i])
 
-    return (cardStacks,deck[54:])	
+    return (cardStacks, deck[54:])
 
 
 def turnFirstCard(cardStack):
     if len(cardStack) > 0:
-        upturnedCard = (cardStack[0][0],True)
+        upturnedCard = (cardStack[0][0], True)
         return [upturnedCard] + cardStack[1:]
     return []
+
 
 def showCardStacks(cardStacks):
     for i in range(len(cardStacks)):
         print("S"+str(i+1)+":[" + printCardStack(cardStacks[i]) + "]")
 
     return 0
-    
+
+
 def printCardStack(cardStack):
     string = ""
     if len(cardStack) > 0:
@@ -55,6 +58,7 @@ def printCardStack(cardStack):
         string = "[ ]"
     return string
 
+
 def verifyOrder(cardStack):
     if len(cardStack) == 0:
         return False
@@ -65,43 +69,33 @@ def verifyOrder(cardStack):
 
 
 def performMovement(origin, destination, n):
-    if n <= len(origin) and origin[n-1][1] == True and verifyOrder(origin[:n] + [destination[0] if len(destination) > 0 else None]) :
-        return (origin[n:], origin[:n] + [destination[0]], True)
+    if n <= len(origin) and origin[n-1][1] == True and verifyOrder(origin[:n] + [destination[0] if len(destination) > 0 else None]):
+        return (origin[n:], origin[:n] + destination, True)
     else:
         return ([], [], False)
 
-""" 
-replaceColumn :: [Card] -> Int -> [[Card]] -> [[Card]]
-replaceColumn list 0 board = list : tail board
-replaceColumn list index board = leftList ++ list : tail rightList
-  where
-    (leftList, rightList) = splitAt (index -1) board
-
-"""
 
 def replaceColumn(list, index, board):
-    return 0
+    return board[:index-1]+[list]+board[index:]
 
-
-"""
-appendRow :: [[Card]] -> [Card] -> ([[Card]], [Card])
-appendRow board deck = (map turnFirstCard $ zipWith (:) (take 10 deck) board, drop 10 deck)
-"""
 
 def appendRow(board, deck):
-    return 0
+    return (list(map(lambda x, y: [y] + x, board, deck[:10])), deck[10:])
+
 
 def removeSet(column):
     if len(column) >= 13 and column[12][1] == True and verifyOrder(column[:13]):
         return column[13:]
-    return column	
+    return column
 
-def main():    
+
+def main():
     board = dealCards(shuffleDeck(createDeck()))
-    print("cards in deck:",len(board[1]))
+    print("cards in deck:", len(board[1]))
     showCardStacks(board[0])
-
+    playTurn(board[0], board[1], 0)
     return 0
+
 
 def moveCards(board):
     print("Which column do you want to move from?")
@@ -117,22 +111,25 @@ def moveCards(board):
         print("Invalid column")
         return board
     else:
-        (newOrigin, newDestination, wasValid) = performMovement((board[origin-1]), (board[destination-1]), cards)
+        (newOrigin, newDestination, wasValid) = performMovement(
+            (board[origin-1]), (board[destination-1]), cards)
         if wasValid:
-            return replaceColumn(newOrigin, origin, (replaceColumn (newDestination,destination, board)))
+            return replaceColumn(newOrigin, origin, (replaceColumn(newDestination, destination, board)))
         else:
             print("Invalid movement")
             return board
 
 
 def playTurn(board, deck, sets):
-    currentBoard = map(removeSet,board)
-    amountSets = sets + len(filter(lambda x: x[1] == False, zip(board, currentBoard)))
+    currentBoard = list(map(removeSet, board))
+    amountSets = sets + \
+        len(list(filter(lambda x: x[1] != x[0], zip(board, currentBoard))))
     if amountSets >= 8:
         print("Congratulations! You won Spider Solitaire")
         return 0
     else:
-        print(currentBoard, len(deck), amountSets)
+        print(len(deck), amountSets)
+        showCardStacks(currentBoard)
         print("What do you want to do?")
         print("1. Move Cards")
         print("2. Place row of cards")
@@ -140,14 +137,15 @@ def playTurn(board, deck, sets):
         option = input("option: ")
         if option == "1":
             newBoard = moveCards(currentBoard)
-            playTurn(map(turnFirstCard, newBoard), deck, amountSets)
+            playTurn(list(map(turnFirstCard, newBoard)), deck, amountSets)
         elif option == "2":
             if len(deck) < 10:
                 print("Deck is empty")
                 playTurn(currentBoard, deck, amountSets)
             else:
                 (newBoard, newDeck) = appendRow(currentBoard, deck)
-                playTurn(newBoard, newDeck, amountSets)
+                playTurn(list(map(turnFirstCard, newBoard)),
+                         newDeck, amountSets)
         elif option == "3":
             print("Quitting")
             return 0
